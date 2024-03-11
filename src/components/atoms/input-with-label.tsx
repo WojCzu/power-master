@@ -8,6 +8,7 @@ type InputWithLabelProps = {
 	id: string;
 	label: string;
 	value?: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	register?: UseFormRegister<any>;
 };
 

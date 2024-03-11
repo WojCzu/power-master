@@ -33,9 +33,12 @@ export function LoadDropCalculations() {
 
 		const mainSetRpe = transformRirToRpe(watchedFields["main-rir"]);
 		const mainSetReps = watchedFields["main-reps"] || 1;
-		const rpe = mainSetRpe < 4 ? 4 : mainSetRpe;
+		type RPE = keyof typeof RPE_CHART;
+
+		const rpe: RPE = mainSetRpe < 4 ? "4" : (mainSetRpe.toString() as RPE);
 		const rep = mainSetReps > 12 ? 12 : mainSetReps;
-		const modifier = RPE_CHART[`${rpe}`][rep - 1];
+
+		const modifier = RPE_CHART[rpe][rep - 1];
 		const weight = watchedFields["main-weight"];
 
 		const estimatedOneRepMax = weight / modifier;
