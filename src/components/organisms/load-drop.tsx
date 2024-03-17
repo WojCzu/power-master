@@ -3,10 +3,22 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { InputWithLabel } from "@/components/atoms/input-with-label";
 import { RPE_CHART } from "@/lib/constants";
+import { ToggleRir } from "@/components/molecules/toggle-rir";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export function LoadDropCalculations() {
+	const [rir, setRir] = useState<"RIR" | "RPE">("RIR");
+	const [rounding, setRounding] = useState(0.25);
+
 	const formSchema = z.object({
 		"main-weight": z.number().nonnegative().step(0.25),
 		"main-reps": z.number().positive().int().max(12),
@@ -31,7 +43,11 @@ export function LoadDropCalculations() {
 		)
 			return 0;
 
-		const mainSetRpe = transformRirToRpe(watchedFields["main-rir"]);
+		const mainSetRpe =
+			rir === "RIR"
+				? transformRirToRpe(watchedFields["main-rir"])
+				: Math.round(Number(watchedFields["main-rir"]) * 2) / 2;
+		const mainSetRir = 10 - mainSetRpe;
 		const mainSetReps = watchedFields["main-reps"] || 1;
 		type RPE = keyof typeof RPE_CHART;
 
@@ -42,8 +58,7 @@ export function LoadDropCalculations() {
 		const weight = watchedFields["main-weight"];
 
 		const estimatedOneRepMax = weight / modifier;
-		const repsInit =
-			1 - 0.031 * (Number(watchedFields["main-reps"]) + Number(watchedFields["main-rir"]) - 1);
+		const repsInit = 1 - 0.031 * (Number(watchedFields["main-reps"]) + mainSetRir - 1);
 		const repsDiff =
 			1 -
 			0.027 *
@@ -64,12 +79,37 @@ export function LoadDropCalculations() {
 
 	return (
 		<div className="flex flex-col gap-4 py-4">
+			<div className="flex items-start gap-10">
+				<ToggleRir
+					handleClick={() =>
+						setRir((prev) => {
+							if (prev === "RIR") return "RPE";
+							return "RIR";
+						})
+					}
+					value={rir}
+				/>
+				<div className="flex flex-col">
+					<span>select rounding:</span>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline">
+								<span>{rounding}</span>
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem onClick={() => setRounding(2.5)}>2.5</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => setRounding(0.25)}>0.25</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
+			</div>
 			<div>
 				<h3>Main Set</h3>
 				<div className="flex gap-2">
 					<InputWithLabel register={register} id="main-weight" label="weight" />
 					<InputWithLabel register={register} id="main-reps" label="reps" />
-					<InputWithLabel register={register} id="main-rir" label="RIR" />
+					<InputWithLabel register={register} id="main-rir" label={rir} />
 				</div>
 			</div>
 			<div>
@@ -77,13 +117,13 @@ export function LoadDropCalculations() {
 				<div className="flex gap-2">
 					<InputWithLabel register={register} id="bakckoff-sets" label="sets" />
 					<InputWithLabel register={register} id="bakckoff-reps" label="reps" />
-					<InputWithLabel register={register} id="bakckoff-rir" label="RIR" />
+					<InputWithLabel register={register} id="bakckoff-rir" label={rir} />
 				</div>
 			</div>
 
 			<div className="flex flex-col">
 				<span>Your Load Drop</span>
-				<span className="text-6xl">{Math.floor(calculateLoadDrop() / 0.25) * 0.25}kg</span>
+				<span className="text-6xl">{Math.floor(calculateLoadDrop() / rounding) * rounding}kg</span>
 			</div>
 		</div>
 	);
