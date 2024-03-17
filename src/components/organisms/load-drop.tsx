@@ -48,10 +48,19 @@ export function LoadDropCalculations() {
 				? transformRirToRpe(watchedFields["main-rir"])
 				: Math.round(Number(watchedFields["main-rir"]) * 2) / 2;
 		const mainSetRir = 10 - mainSetRpe;
+
+		const backoffRpe =
+			rir === "RIR"
+				? transformRirToRpe(watchedFields["bakckoff-rir"])
+				: Math.round(Number(watchedFields["bakckoff-rir"]) * 2) / 2;
+		const backoffRir = 10 - backoffRpe;
+
 		const mainSetReps = watchedFields["main-reps"] || 1;
 		type RPE = keyof typeof RPE_CHART;
 
 		const rpe: RPE = mainSetRpe < 4 ? "4" : (mainSetRpe.toString() as RPE);
+		console.log(mainSetRpe);
+		console.log(rpe);
 		const rep = mainSetReps > 12 ? 12 : mainSetReps;
 
 		const modifier = RPE_CHART[rpe][rep - 1];
@@ -64,8 +73,8 @@ export function LoadDropCalculations() {
 			0.027 *
 				(Number(watchedFields["bakckoff-reps"]) -
 					Number(watchedFields["main-reps"]) +
-					Number(watchedFields["bakckoff-rir"]) -
-					Number(watchedFields["main-rir"]));
+					backoffRir -
+					mainSetRir);
 
 		const setModifier = 1 - (Number(watchedFields["bakckoff-sets"]) - 1) * 0.027;
 
