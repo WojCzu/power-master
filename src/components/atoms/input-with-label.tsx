@@ -1,31 +1,30 @@
-import { type UseFormRegister } from "react-hook-form";
+import { type UseFormRegister, type FieldValues, type Path } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-type InputWithLabelProps = {
+type InputWithLabelProps<TFormValues extends FieldValues> = {
 	placeholder?: string;
 	disabled?: boolean;
-	id: string;
+	id: Path<TFormValues>;
 	label: string;
 	value?: string;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	register?: UseFormRegister<any>;
+	register?: UseFormRegister<TFormValues>;
 };
 
-export function InputWithLabel({
+export function InputWithLabel<TFormValues extends FieldValues>({
 	placeholder,
 	id,
 	label,
 	disabled,
 	value,
 	register,
-}: InputWithLabelProps) {
-	const registerValues = register?.(id) || {};
+}: InputWithLabelProps<TFormValues>) {
+	const registerValues = register ? register(id) : {};
 	return (
 		<div className="grid w-full max-w-sm items-center gap-1.5">
-			<Label htmlFor={id}>{label}</Label>
+			<Label htmlFor={id as string}>{label}</Label>
 			<Input
-				id={id}
+				id={id as string}
 				placeholder={placeholder}
 				disabled={disabled}
 				value={value}

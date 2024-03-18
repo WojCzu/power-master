@@ -5,7 +5,6 @@ export default function LoadDrop() {
 		<>
 			<h1 className="text-2xl font-bold">Calculate Load Drop</h1>
 			<p>Add all the data for the main set and the assumed data to be done in the backoff sets</p>
-
 			<LoadDropCalculations />
 		</>
 	);
