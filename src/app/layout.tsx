@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/components/context/theme-provider";
 import "./globals.css";
 import { ModeToggle } from "@/components/molecules/toggle-mode";
@@ -19,6 +20,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
+				<Analytics />
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="system"
