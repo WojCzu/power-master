@@ -13,17 +13,17 @@ export function LoadDropForm({ rir, register }: LoadDropFormProps) {
 			<div>
 				<h3>Main Set</h3>
 				<div className="flex gap-2">
-					<InputWithLabel register={register} id="mainWeight" label="weight" />
-					<InputWithLabel register={register} id="mainReps" label="reps" />
-					<InputWithLabel register={register} id="mainRir" label={rir} />
+					<InputWithLabel register={register} id="mainWeight" label="weight" type="number" />
+					<InputWithLabel register={register} id="mainReps" label="reps" type="number" />
+					<InputWithLabel register={register} id="mainRir" label={rir} type="number" />
 				</div>
 			</div>
 			<div>
 				<h3>Backoff Set</h3>
 				<div className="flex gap-2">
-					<InputWithLabel register={register} id="backoffSets" label="sets" />
-					<InputWithLabel register={register} id="backoffReps" label="reps" />
-					<InputWithLabel register={register} id="backoffRir" label={rir} />
+					<InputWithLabel register={register} id="backoffSets" label="sets" type="number" />
+					<InputWithLabel register={register} id="backoffReps" label="reps" type="number" />
+					<InputWithLabel register={register} id="backoffRir" label={rir} type="number" />
 				</div>
 			</div>
 		</>
